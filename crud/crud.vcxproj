@@ -140,13 +140,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Json.cpp" />
+    <ClCompile Include="JsonRecordStore.cpp" />
+    <ClCompile Include="ConsoleApp.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="JsonTests.cpp" />
     <ClCompile Include="QuickSortTests.cpp" />
+    <ClCompile Include="JsonRecordStoreTests.cpp" />
+    <ClCompile Include="ConsoleAppTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Json.h" />
     <ClInclude Include="QuickSort.h" />
+    <ClInclude Include="IRecordStore.h" />
+    <ClInclude Include="JsonRecordStore.h" />
+    <ClInclude Include="ConsoleApp.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

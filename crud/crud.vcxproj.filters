@@ -18,6 +18,12 @@
     <ClCompile Include="Json.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="JsonRecordStore.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleApp.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -27,12 +33,27 @@
     <ClCompile Include="QuickSortTests.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="JsonRecordStoreTests.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleAppTests.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Json.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="QuickSort.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="IRecordStore.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonRecordStore.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleApp.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,36 +1,18 @@
-#include <iostream>
+#include <string>
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include "Json.h"
-
-namespace {
-
-    void RunJsonDemo() {
-        json::Value root = json::Value::MakeObject();
-        root.Set("name", "crud");
-        root.Set("version", 1);
-        root.Set("active", true);
-
-        json::Value tags = json::Value::MakeArray();
-        tags.PushBack("json");
-        tags.PushBack("library");
-        root.Set("tags", tags);
-
-        std::cout << root.ToString(2) << std::endl;
-
-        root.SaveToFile("output.json", 2);
-
-        json::Value loaded = json::Value::ParseFile("output.json");
-        std::cout << "name: " << loaded["name"].AsString() << std::endl;
-    }
-
-} // namespace
+#include "ConsoleApp.h"
+#include "JsonRecordStore.h"
 
 int main(int argc, char** argv) {
-    RunJsonDemo();
+    if (argc > 1 && std::string(argv[1]) == "--test") {
+        ::testing::InitGoogleMock(&argc, argv);
+        return RUN_ALL_TESTS();
+    }
 
-    ::testing::InitGoogleMock(&argc, argv);
-    return RUN_ALL_TESTS();
+    crudapp::JsonRecordStore store("data.json");
+    crudapp::ConsoleApp app(store);
+    return app.Run();
 }
