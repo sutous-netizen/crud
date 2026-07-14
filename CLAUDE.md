@@ -1,6 +1,9 @@
 # crud
 
-C++20 Visual Studio 프로젝트. `crud/` 폴더에 JSON 파싱 및 파일 저장을 지원하는 자체 구현 JSON 라이브러리(`json::Value`)가 포함되어 있습니다. 외부 의존성 없이 표준 라이브러리만 사용합니다.
+C++20 Visual Studio 프로젝트. `crud/` 폴더에 다음 두 라이브러리가 포함되어 있습니다. 외부 의존성 없이 표준 라이브러리만 사용합니다.
+
+- JSON 파싱/저장 라이브러리 (`json::Value`)
+- 퀵정렬 라이브러리 (`sortlib::QuickSort`)
 
 ## 빌드
 
@@ -75,3 +78,23 @@ NuGet 패키지 `gmock` 1.11.0(gtest 포함, `crud/packages.config`, `crud/crud.
 - `JsonMockIntegrationTest`: `MOCK_METHOD`/`EXPECT_CALL`로 직렬화된 JSON을 전달받는 소비자(`JsonSink`)와의 상호작용을 검증하는 gmock 시나리오 (단일 호출 검증, `InSequence`를 이용한 배치 순서 검증)
 
 빌드 후 `crud.exe`를 실행하면 데모 출력과 함께 테스트 결과가 콘솔에 출력됩니다.
+
+## 퀵정렬 라이브러리 (`crud/QuickSort.h`)
+
+헤더 전용 템플릿 라이브러리로, `sortlib` 네임스페이스에 `std::sort`처럼 랜덤 액세스 반복자 범위를 그 자리에서(in-place) 정렬하는 `QuickSort` 함수를 제공합니다. `std::vector`, `std::array`, 원시 포인터/배열 등 랜덤 액세스 반복자를 지원하는 어떤 컨테이너에도 사용할 수 있습니다.
+
+```cpp
+#include "QuickSort.h"
+
+std::vector<int> v{5, 3, 1, 4, 2};
+sortlib::QuickSort(v.begin(), v.end());                       // operator< 사용, 오름차순
+sortlib::QuickSort(v.begin(), v.end(), std::greater<int>());  // 사용자 정의 비교자, 내림차순
+```
+
+- median-of-three 방식으로 피벗을 선택한 뒤 Hoare partition으로 분할하는 재귀 퀵정렬입니다. 이미 정렬된/역순 입력에서도 O(n²) 최악 케이스에 잘 빠지지 않도록 설계했습니다.
+- 두 번째 인자로 비교자(`Compare`)를 넘기면 `std::greater<T>` 같은 커스텀 정렬 순서를 사용할 수 있습니다.
+- 평균 시간복잡도 O(n log n), in-place 정렬(추가 메모리 O(log n) 스택 공간만 사용)이며, 퀵정렬 특성상 안정 정렬(stable sort)은 아닙니다.
+
+### 테스트 (`crud/QuickSortTests.cpp`)
+
+`QuickSortTest` 스위트에서 다음 시나리오를 검증합니다: 빈 범위, 단일 원소, 이미 정렬된 입력, 역순 입력, 무작위 입력, 중복 값 포함, 전부 동일한 값, 커스텀 비교자(내림차순), `std::string` 정렬, `std::array`/원시 배열 등 다양한 컨테이너, 그리고 `std::sort` 결과와의 비교 검증. 총 12개 테스트이며 위의 JSON 테스트와 함께 `crud.exe` 실행 시 자동으로 실행됩니다.

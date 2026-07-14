@@ -142,9 +142,11 @@
     <ClCompile Include="Json.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="JsonTests.cpp" />
+    <ClCompile Include="QuickSortTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Json.h" />
+    <ClInclude Include="QuickSort.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
