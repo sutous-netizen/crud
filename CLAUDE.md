@@ -126,7 +126,7 @@ crudapp::ConsoleApp app(store);
 app.Run();
 ```
 
-- `crud.exe` 실행 시 기본적으로 `data.json`을 저장소로 사용하는 대화형 CRUD 메뉴가 실행됩니다.
+- `crud.exe`(Release 빌드) 실행 시 기본적으로 `data.json`을 저장소로 사용하는 대화형 CRUD 메뉴가 실행됩니다. Debug 빌드는 인자 없이 실행해도 대화형 메뉴 대신 전체 테스트가 자동 실행됩니다(자세한 내용은 "테스트 실행" 절 참고).
 - Create/Update에서 필드는 `key=value` 형식으로 한 줄씩 입력하고 빈 줄로 종료합니다(모든 값은 문자열로 저장됨).
 - 레코드 수정/삭제는 `Create`가 반환한 정수 `id`로 지정합니다. 조회는 `id` 또는 `key=value`(예: `role=engineer`) 중 하나로 할 수 있습니다.
 
@@ -202,11 +202,12 @@ crud.exe --demo
 
 ## 테스트 실행
 
-NuGet 패키지 `gmock` 1.11.0(gtest 포함, `crud/packages.config`, `crud/crud.vcxproj`의 `ExtensionTargets`로 연결)을 사용합니다. 별도 테스트 프로젝트 없이 같은 `crud` 프로젝트 안에 테스트를 두고, `crud.exe --test`로 실행하면 `RUN_ALL_TESTS()`가 호출되어 모든 테스트(Json/QuickSort/JsonRecordStore/ConsoleApp/DataPersistenceDemo)가 한 번에 실행됩니다. 인자 없이 `crud.exe`를 실행하면 대화형 CRUD 콘솔 앱이 시작되고, `crud.exe --demo`로 실행하면 데이터 영속성 데모가 실행됩니다.
+NuGet 패키지 `gmock` 1.11.0(gtest 포함, `crud/packages.config`, `crud/crud.vcxproj`의 `ExtensionTargets`로 연결)을 사용합니다. 별도 테스트 프로젝트 없이 같은 `crud` 프로젝트 안에 테스트를 두고, 빌드 구성(`_DEBUG`/`NDEBUG`)만으로 실행 동작이 갈립니다.
 
-**Debug 전용 테스트 빌드**: `*Tests.cpp` 파일들과 이들이 끌어오는 gtest/gmock 소스(`gtest-all.cc`, `gmock-all.cc`)는 `crud.vcxproj`에서 Release 구성일 때 `ExcludedFromBuild`로 컴파일에서 제외됩니다. `main.cpp`의 `--test` 처리와 `<gmock/gmock.h>`/`<gtest/gtest.h>` include도 `#ifdef _DEBUG`로 감싸져 있어, Release 바이너리는 gtest/gmock에 전혀 의존하지 않고 CRUD 콘솔 앱과 `--demo`만 포함합니다. 테스트는 Debug 빌드(`crud.exe --test`)에서만 실행할 수 있습니다.
+- **Debug 빌드**: `crud.exe`를 인자 없이 실행하면 `main`이 곧바로 `RUN_ALL_TESTS()`를 호출해 모든 테스트(Json/QuickSort/JsonRecordStore/ConsoleApp/DataPersistenceDemo)를 자동으로 실행합니다. 명령줄 인자나 별도 옵션(`--test` 등)이 필요 없으므로, Visual Studio에서 F5(디버그 시작)만 눌러도 바로 TC 결과를 확인할 수 있습니다.
+- **Release 빌드**: 인자 없이 실행하면 대화형 CRUD 콘솔 앱이 시작되고, `crud.exe --demo`로 실행하면 데이터 영속성 데모가 실행됩니다. 이 경로가 "원래 코드"이며 테스트 관련 옵션은 존재하지 않습니다.
 
-**Visual Studio에서 F5로 바로 테스트 확인하기**: `crud.vcxproj.user`는 커밋되지 않는 사용자별 설정 파일(`.gitignore`의 `*.vcxproj.user`)이라, 새로 클론했거나 이 설정이 없는 환경에서는 F5(디버그 시작)를 누르면 명령줄 인자가 비어 있어 대화형 콘솔 메뉴가 뜹니다. Debug 구성에서 F5로 바로 테스트를 돌리려면 프로젝트 속성 → 디버깅(Debugging) → 명령 인수(Command Arguments)에 `--test`를 Debug|Win32, Debug|x64 두 구성에 입력하면 됩니다(Release 구성은 비워 두어 원래 콘솔 앱이 실행되게 합니다).
+**Debug 전용 테스트 빌드**: `*Tests.cpp` 파일들과 이들이 끌어오는 gtest/gmock 소스(`gtest-all.cc`, `gmock-all.cc`)는 `crud.vcxproj`에서 Release 구성일 때 `ExcludedFromBuild`로 컴파일에서 제외됩니다. `main.cpp`도 `#ifdef _DEBUG`/`#else`로 분기되어 있어, Debug 빌드는 `<gmock/gmock.h>`/`<gtest/gtest.h>`를 포함해 테스트만 실행하고, Release 바이너리는 gtest/gmock에 전혀 의존하지 않고 CRUD 콘솔 앱과 `--demo`만 포함합니다.
 
 
 

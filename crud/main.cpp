@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <string>
 
 #ifdef _DEBUG
@@ -12,12 +12,10 @@
 
 int main(int argc, char** argv) {
 #ifdef _DEBUG
-    if (argc > 1 && std::string(argv[1]) == "--test") {
-        ::testing::InitGoogleMock(&argc, argv);
-        return RUN_ALL_TESTS();
-    }
-#endif
-
+    // Debug 빌드는 TC 검증이 목적이므로, 인자 없이 실행해도 항상 전체 테스트를 수행한다.
+    ::testing::InitGoogleMock(&argc, argv);
+    return RUN_ALL_TESTS();
+#else
     if (argc > 1 && std::string(argv[1]) == "--demo") {
         crudapp::RunDataPersistenceDemo(std::cout);
         return 0;
@@ -26,4 +24,5 @@ int main(int argc, char** argv) {
     crudapp::JsonRecordStore store("data.json");
     crudapp::ConsoleApp app(store);
     return app.Run();
+#endif
 }
