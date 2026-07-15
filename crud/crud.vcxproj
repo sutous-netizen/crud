@@ -142,6 +142,7 @@
     <ClCompile Include="Json.cpp" />
     <ClCompile Include="JsonRecordStore.cpp" />
     <ClCompile Include="ConsoleApp.cpp" />
+    <ClCompile Include="DataPersistenceDemo.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="JsonTests.cpp" />
     <ClCompile Include="QuickSortTests.cpp" />
@@ -154,6 +155,7 @@
     <ClInclude Include="IRecordStore.h" />
     <ClInclude Include="JsonRecordStore.h" />
     <ClInclude Include="ConsoleApp.h" />
+    <ClInclude Include="DataPersistenceDemo.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

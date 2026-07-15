@@ -135,6 +135,10 @@ app.Run();
 - 새로운 저장소 백엔드(예: SQLite, 원격 API)가 필요하면 `IRecordStore`를 구현하기만 하면 되고, `ConsoleApp`은 변경할 필요가 없습니다.
 - 새 메뉴 명령을 추가하려면 `ConsoleApp::Run()`의 분기와 `PrintMenu()`에 항목을 추가합니다.
 
+### 데이터 영속성 데모 (`crud/DataPersistenceDemo.h`, `crud/DataPersistenceDemo.cpp`)
+
+`crud.exe --demo`로 실행하면 전용 파일(`demo_data.json`)에 대해 Create → (같은 파일로 새 `JsonRecordStore` 인스턴스를 만들어 "앱 재시작" 시뮬레이션) → Update/Delete → 저장된 파일의 raw 내용 출력까지 비대화형으로 자동 시연합니다. 데이터 영속성 계층의 기능 요약과 제약사항은 [`docs/DataPersistence.md`](docs/DataPersistence.md)에 정리되어 있습니다.
+
 ### 테스트 (`crud/JsonRecordStoreTests.cpp`, `crud/ConsoleAppTests.cpp`)
 
 - `JsonRecordStoreTest`: id 자동 증가, `Find`/`FindByField`/`Update`/`Delete` 정상 동작, `id`를 덮어쓰지 않는 병합, 인스턴스 재시작 후 영속성 및 id 이어받기, 저장된 파일이 실제로 파싱 가능한지 검증, 손상된 항목/파싱 불가 파일/배열이 아닌 최상위 값에 대한 방어적 동작, object가 아닌 `fields`로 `Update` 호출 시 무해하게 무시되는지, 하나만 수정해도 다른 필드는 그대로인지, 하나를 삭제해도 다른 레코드는 메모리·파일 양쪽에서 온전한지, 범위를 벗어난 id에 대한 `Find`/`Delete`
@@ -149,4 +153,4 @@ app.Run();
 
 ## 테스트 실행
 
-NuGet 패키지 `gmock` 1.11.0(gtest 포함, `crud/packages.config`, `crud/crud.vcxproj`의 `ExtensionTargets`로 연결)을 사용합니다. 별도 테스트 프로젝트 없이 같은 `crud` 프로젝트 안에 테스트를 두고, `crud.exe --test`로 실행하면 `RUN_ALL_TESTS()`가 호출되어 모든 테스트(Json/QuickSort/JsonRecordStore/ConsoleApp)가 한 번에 실행됩니다. 인자 없이 `crud.exe`를 실행하면 대화형 CRUD 콘솔 앱이 시작됩니다.
+NuGet 패키지 `gmock` 1.11.0(gtest 포함, `crud/packages.config`, `crud/crud.vcxproj`의 `ExtensionTargets`로 연결)을 사용합니다. 별도 테스트 프로젝트 없이 같은 `crud` 프로젝트 안에 테스트를 두고, `crud.exe --test`로 실행하면 `RUN_ALL_TESTS()`가 호출되어 모든 테스트(Json/QuickSort/JsonRecordStore/ConsoleApp)가 한 번에 실행됩니다. 인자 없이 `crud.exe`를 실행하면 대화형 CRUD 콘솔 앱이 시작되고, `crud.exe --demo`로 실행하면 데이터 영속성 데모가 실행됩니다.
