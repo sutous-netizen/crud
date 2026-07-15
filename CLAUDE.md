@@ -184,6 +184,10 @@ crud.exe --demo
 - **손상 데이터에 대한 방어적 무시**: object가 아니거나 `id`가 없는 항목은 로드 시 조용히 건너뛰고, 파일 자체가 손상되었거나 배열이 아니면 빈 저장소로 시작합니다. 손상 여부를 사용자에게 알리지는 않습니다.
 - **백업/버전 관리 없음**: 매 저장이 기존 파일 내용을 덮어쓰므로, 이전 상태로 되돌릴 방법은 별도로 제공되지 않습니다.
 
+**테스트 (`crud/DataPersistenceDemoTests.cpp`, Debug 전용)**
+
+`RunDataPersistenceDemo`는 두 번째 인자로 파일 경로를 받을 수 있어(`filePath`, 기본값 `"demo_data.json"`), 테스트에서 `::testing::TempDir()` 기반 경로를 넘겨 격리된 상태로 검증합니다. `DataPersistenceDemoTest` 스위트가 확인하는 내용: 최초 실행 시 빈 저장소로 시작하는지, Create한 레코드가 재시작 시뮬레이션 후에도 남아있는지, Update/Delete 결과가 디스크 파일에 정확히 반영되는지, 마지막 단계에서 raw 파일 내용이 출력에 포함되는지, 그리고 같은 경로로 반복 실행해도(파일을 초기화하므로) 동일한 결과가 나오는지.
+
 ### 테스트 (`crud/JsonRecordStoreTests.cpp`, `crud/ConsoleAppTests.cpp`)
 
 - `JsonRecordStoreTest`: id 자동 증가, `Find`/`FindByField`/`Update`/`Delete` 정상 동작, `id`를 덮어쓰지 않는 병합, 인스턴스 재시작 후 영속성 및 id 이어받기, 저장된 파일이 실제로 파싱 가능한지 검증, 손상된 항목/파싱 불가 파일/배열이 아닌 최상위 값에 대한 방어적 동작, object가 아닌 `fields`로 `Update` 호출 시 무해하게 무시되는지, 하나만 수정해도 다른 필드는 그대로인지, 하나를 삭제해도 다른 레코드는 메모리·파일 양쪽에서 온전한지, 범위를 벗어난 id에 대한 `Find`/`Delete`
@@ -198,7 +202,9 @@ crud.exe --demo
 
 ## 테스트 실행
 
-NuGet 패키지 `gmock` 1.11.0(gtest 포함, `crud/packages.config`, `crud/crud.vcxproj`의 `ExtensionTargets`로 연결)을 사용합니다. 별도 테스트 프로젝트 없이 같은 `crud` 프로젝트 안에 테스트를 두고, `crud.exe --test`로 실행하면 `RUN_ALL_TESTS()`가 호출되어 모든 테스트(Json/QuickSort/JsonRecordStore/ConsoleApp)가 한 번에 실행됩니다. 인자 없이 `crud.exe`를 실행하면 대화형 CRUD 콘솔 앱이 시작되고, `crud.exe --demo`로 실행하면 데이터 영속성 데모가 실행됩니다.
+NuGet 패키지 `gmock` 1.11.0(gtest 포함, `crud/packages.config`, `crud/crud.vcxproj`의 `ExtensionTargets`로 연결)을 사용합니다. 별도 테스트 프로젝트 없이 같은 `crud` 프로젝트 안에 테스트를 두고, `crud.exe --test`로 실행하면 `RUN_ALL_TESTS()`가 호출되어 모든 테스트(Json/QuickSort/JsonRecordStore/ConsoleApp/DataPersistenceDemo)가 한 번에 실행됩니다. 인자 없이 `crud.exe`를 실행하면 대화형 CRUD 콘솔 앱이 시작되고, `crud.exe --demo`로 실행하면 데이터 영속성 데모가 실행됩니다.
+
+**Debug 전용 테스트 빌드**: `*Tests.cpp` 파일들과 이들이 끌어오는 gtest/gmock 소스(`gtest-all.cc`, `gmock-all.cc`)는 `crud.vcxproj`에서 Release 구성일 때 `ExcludedFromBuild`로 컴파일에서 제외됩니다. `main.cpp`의 `--test` 처리와 `<gmock/gmock.h>`/`<gtest/gtest.h>` include도 `#ifdef _DEBUG`로 감싸져 있어, Release 바이너리는 gtest/gmock에 전혀 의존하지 않고 CRUD 콘솔 앱과 `--demo`만 포함합니다. 테스트는 Debug 빌드(`crud.exe --test`)에서만 실행할 수 있습니다.
 
 
 

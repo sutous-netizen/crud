@@ -144,10 +144,25 @@
     <ClCompile Include="ConsoleApp.cpp" />
     <ClCompile Include="DataPersistenceDemo.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="JsonTests.cpp" />
-    <ClCompile Include="QuickSortTests.cpp" />
-    <ClCompile Include="JsonRecordStoreTests.cpp" />
-    <ClCompile Include="ConsoleAppTests.cpp" />
+  </ItemGroup>
+  <!-- gtest/gmock 기반 테스트 소스는 Release 빌드에서 제외되어, Release 바이너리는
+       gtest/gmock에 의존하지 않는다. Debug 빌드(crud.exe 테스트 옵션)에서만 컴파일된다. -->
+  <ItemGroup>
+    <ClCompile Include="JsonTests.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='Release'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="QuickSortTests.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='Release'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="JsonRecordStoreTests.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='Release'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="ConsoleAppTests.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='Release'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="DataPersistenceDemoTests.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)'=='Release'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Json.h" />
@@ -164,6 +179,15 @@
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\gmock.1.11.0\build\native\gmock.targets" Condition="Exists('..\packages\gmock.1.11.0\build\native\gmock.targets')" />
   </ImportGroup>
+  <!-- gmock.targets(NuGet)가 무조건 추가하는 gtest/gmock 소스도 Release에서는 제외한다. -->
+  <ItemGroup Condition="'$(Configuration)'=='Release'">
+    <ClCompile Update="..\packages\gmock.1.11.0\lib\native\src\gtest\gtest-all.cc">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Update="..\packages\gmock.1.11.0\lib\native\src\gmock\gmock-all.cc">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+  </ItemGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>이 프로젝트는 이 컴퓨터에 없는 NuGet 패키지를 참조합니다. 해당 패키지를 다운로드하려면 NuGet 패키지 복원을 사용하십시오. 자세한 내용은 http://go.microsoft.com/fwlink/?LinkID=322105를 참조하십시오. 누락된 파일은 {0}입니다.</ErrorText>

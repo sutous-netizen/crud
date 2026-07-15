@@ -10,8 +10,6 @@ namespace crudapp {
 
     namespace {
 
-        constexpr const char* kDemoFilePath = "demo_data.json";
-
         void PrintAll(std::ostream& out, const IRecordStore& store) {
             for (const auto& record : store.All()) {
                 out << "  " << record.ToString() << "\n";
@@ -27,14 +25,14 @@ namespace crudapp {
 
     } // namespace
 
-    void RunDataPersistenceDemo(std::ostream& out) {
-        std::remove(kDemoFilePath);
+    void RunDataPersistenceDemo(std::ostream& out, const std::string& filePath) {
+        std::remove(filePath.c_str());
 
-        out << "=== Data Persistence Demo (" << kDemoFilePath << ") ===\n\n";
+        out << "=== Data Persistence Demo (" << filePath << ") ===\n\n";
 
         out << "[1] Create a fresh store (no file yet -> empty store)\n";
         {
-            JsonRecordStore store(kDemoFilePath);
+            JsonRecordStore store(filePath);
             out << "  record count: " << store.All().size() << "\n\n";
 
             out << "[2] Create records\n";
@@ -55,7 +53,7 @@ namespace crudapp {
         } // store goes out of scope here, simulating the process exiting
 
         out << "[3] Simulate an app restart: open the same file in a new store instance\n";
-        JsonRecordStore restarted(kDemoFilePath);
+        JsonRecordStore restarted(filePath);
         out << "  record count after restart: " << restarted.All().size()
             << " (data survived via the file)\n";
         PrintAll(out, restarted);
@@ -70,8 +68,8 @@ namespace crudapp {
         PrintAll(out, restarted);
         out << "\n";
 
-        out << "[5] Raw file contents on disk (" << kDemoFilePath << ")\n";
-        PrintFileContents(out, kDemoFilePath);
+        out << "[5] Raw file contents on disk (" << filePath << ")\n";
+        PrintFileContents(out, filePath);
     }
 
 } // namespace crudapp
